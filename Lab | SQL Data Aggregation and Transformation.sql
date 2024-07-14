@@ -15,7 +15,11 @@ from film
 group by title
 order by min_duration asc
 limit 1;
-    
+
+# or
+select max(length) as max_duration, min(length) as min_duration
+from film;
+
 	# 1.2. Express the average movie duration in hours and minutes. Don't use decimals.
 		 # Hint: Look for floor and round functions.
 
@@ -27,7 +31,7 @@ from film;
 	# 2.1 Calculate the number of days that the company has been operating.
 		# Hint: To do this, use the rental table, and the DATEDIFF() function to subtract the earliest date in the rental_date column from the latest date.
 	
-select datediff(max(rental_date), min(return_date)) as days_operating
+select datediff(max(rental_date), min(rental_date)) as days_operating
 from rental; 
 
     # 2.2 Retrieve rental information and add two additional columns to show the month and weekday of the rental. Return 20 rows of results.
@@ -35,6 +39,11 @@ from rental;
 select * , monthname(rental_date) as month, dayname(rental_date) as day
 from rental
 limit 20;
+
+# or
+SELECT *, DATE_FORMAT(rental_date, '%M') AS MONTH, DATE_FORMAT(rental_date, '%W') AS WEEKDAY
+FROM rental
+LIMIT 20;
 
 	# 2.3 Bonus: Retrieve rental information and add an additional column called DAY_TYPE with values 'weekend' or 'workday', depending on the day of the week.
 	# Hint: use a conditional expression.
@@ -52,9 +61,9 @@ from rental;
 # Please note that even if there are currently no null values in the rental duration column, the query should still be written to handle such cases in the future.
 # Hint: Look for the IFNULL() function.
 
-SELECT title, rental_duration
+SELECT title, IFNULL(rental_duration, 'Not available') as rental_duration
 FROM film 
-ORDER BY rental_duration ASC;
+ORDER BY title ASC;
 
 # Challenge 2
 # 1. Next, you need to analyze the films in the collection to gain some more insights. Using the film table, determine:
@@ -75,7 +84,7 @@ GROUP BY rating;
 SELECT rating, count(rating)
 FROM film
 GROUP BY rating
-ORDER BY rating ASC;
+ORDER BY rating DESC;
 
 # 2. Using the film table, determine:
 	# 2.1 The mean film duration for each rating, and sort the results in descending order of the mean duration. Round off the average lengths to two decimal places.
